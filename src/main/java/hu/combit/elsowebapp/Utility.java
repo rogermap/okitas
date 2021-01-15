@@ -43,11 +43,12 @@ public class Utility {
     public static void create(String a, String b, String c, String d) {
 
         try (Connection conn = getConnection()) {
-            PreparedStatement ps2 = conn.prepareStatement("insert into ABC (A,B,C,D) values(?,?,?,?)");
+            PreparedStatement ps2 = conn.prepareStatement("insert into ABC (A,B,C,D,ID) values(?,?,?,?,?)");
             ps2.setInt(1, Integer.parseInt(a));
             ps2.setString(2, b);
             ps2.setString(3, c);
             ps2.setDate(4, java.sql.Date.valueOf(d));//csak erre a formatumra jó : 2000-01-01
+            ps2.setLong(5, System.currentTimeMillis());
             ps2.executeUpdate();
             ps2.close();
         } catch (SQLException ex) {
@@ -56,6 +57,53 @@ public class Utility {
 
     }
 
+    public static void update(String id, String a, String b, String c, String d) {
+
+        try (Connection conn = getConnection()) {
+            PreparedStatement ps2 = conn.prepareStatement("update ABC set A=?, B=?,C=?,D=? where ID=?");
+            ps2.setInt(1, Integer.parseInt(a));
+            ps2.setString(2, b);
+            ps2.setString(3, c);
+            ps2.setDate(4, java.sql.Date.valueOf(d));//csak erre a formatumra jó : 2000-01-01
+            ps2.setInt(5, Integer.parseInt(id));
+            ps2.executeUpdate();
+            ps2.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Utility.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    
+    public static String[] findById(String id) {
+        String[] ret = null;
+        try (Connection conn = getConnection()) {
+            PreparedStatement ps2 = conn.prepareStatement("select A,B,C,to_char(D,'YYYY-MM-DD'),ID from ABC where id = ?");
+            ps2.setInt(1, Integer.parseInt(id));
+            ResultSet rs = ps2.executeQuery();
+            while (rs.next()) {
+                ret = new String[]{rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5)};
+            }
+            ps2.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Utility.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return ret;
+    }
+    
+    public static void delete(String id) {
+        try (Connection conn = getConnection()) {
+            PreparedStatement ps2 = conn.prepareStatement("delete from  ABC where id = ?");
+            ps2.setInt(1, Integer.parseInt(id));
+            ps2.executeUpdate();
+            ps2.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Utility.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    
+    
     public static List<String[]> list() {
         List<String[]> ret = new ArrayList<>();
 
