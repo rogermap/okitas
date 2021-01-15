@@ -32,7 +32,7 @@
             <br>
             c:<input type="string" name="c" value="<%=values[2]%>">
             <br>
-            d:<input type="string" name="d" value="<%=values[3]%>">
+            d:<input type="date" name="d" value="<%=values[3]%>">
             <br>
             <input type="hidden" name="id" value="<%=id%>">
             <input type="submit">

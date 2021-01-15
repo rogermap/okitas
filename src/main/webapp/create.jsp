@@ -8,7 +8,8 @@
     String c = request.getParameter("c");
     String d = request.getParameter("d");
     if(a != null && b != null && c != null && d != null){
-        Utility.create(a, b, c, d);
+        Utility.create(a, b, c, d);   
+        response.sendRedirect("index.jsp");
     }
 %>
 <html>
@@ -28,7 +29,7 @@
             <br>
             c:<input type="string" name="c">
             <br>
-            d:<input type="string" name="d" >
+            d:<input type="date" name="d" >
             <br>
             <input type="submit">
         </form>
