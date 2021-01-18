@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.naming.NameNotFoundException;
 
 /**
  *
@@ -65,7 +64,7 @@ public class Utility {
             ps2.setString(2, b);
             ps2.setString(3, c);
             ps2.setDate(4, java.sql.Date.valueOf(d));//csak erre a formatumra jó : 2000-01-01
-            ps2.setInt(5, Integer.parseInt(id));
+            ps2.setLong(5, Long.parseLong(id));
             ps2.executeUpdate();
             ps2.close();
         } catch (SQLException ex) {
@@ -79,7 +78,7 @@ public class Utility {
         String[] ret = null;
         try (Connection conn = getConnection()) {
             PreparedStatement ps2 = conn.prepareStatement("select A,B,C,to_char(D,'YYYY-MM-DD'),ID from ABC where id = ?");
-            ps2.setInt(1, Integer.parseInt(id));
+            ps2.setLong(1, Long.parseLong(id));
             ResultSet rs = ps2.executeQuery();
             while (rs.next()) {
                 ret = new String[]{rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5)};
@@ -94,7 +93,7 @@ public class Utility {
     public static void delete(String id) {
         try (Connection conn = getConnection()) {
             PreparedStatement ps2 = conn.prepareStatement("delete from  ABC where id = ?");
-            ps2.setInt(1, Integer.parseInt(id));
+            ps2.setLong(1, Long.parseLong(id));
             ps2.executeUpdate();
             ps2.close();
         } catch (SQLException ex) {
