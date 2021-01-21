@@ -18,7 +18,7 @@
             }
             function deleteRow(id) {
                 $.ajax({
-                    url: 'abc'+"?id=" + id,
+                    url: 'http://localhost:8081/abc/'+ id,
                     type: 'DELETE',
                     success: function (data) {
                         console.log(data);

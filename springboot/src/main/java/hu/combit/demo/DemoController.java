@@ -12,9 +12,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.websocket.server.PathParam;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.Setter;
 import org.json.simple.JSONArray;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,19 +33,24 @@ public class DemoController {
     
     // http://localhost:8080/osszeadas/12/8 
     
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
     static class Osszeg {
         private int osszeg;
-        public Osszeg(int a, int b){
+        public Osszeg( Integer a, Integer b){
             osszeg = a+b;
         }
+        
     }
     
     @GetMapping("/osszeadas/{a}/{b}")
     public ResponseEntity add(@PathVariable("a") Integer  a,@PathVariable("b")Integer b ){
-        return new ResponseEntity(a+b,  HttpStatus.OK);
+        return new ResponseEntity(new Osszeg(a,b),  HttpStatus.OK);
     }
     
-    
+    @CrossOrigin(origins = "http://localhost:8080")
     @DeleteMapping("/abc/{id}")
     protected String doDelete(@PathVariable("id") String  id) {
         if (id != null) {
