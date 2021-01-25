@@ -6,6 +6,7 @@
 package hu.combit.demo;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -39,14 +40,14 @@ public class Utility {
         return conn;
     }
 
-    public static void create(String a, String b, String c, String d) {
+    public static void create(Integer a, String b, String c, java.util.Date d) {
 
         try (Connection conn = getConnection()) {
             PreparedStatement ps2 = conn.prepareStatement("insert into ABC (A,B,C,D,ID) values(?,?,?,?,?)");
-            ps2.setInt(1, Integer.parseInt(a));
+            ps2.setInt(1, a);
             ps2.setString(2, b);
             ps2.setString(3, c);
-            ps2.setDate(4, java.sql.Date.valueOf(d));//csak erre a formatumra jó : 2000-01-01
+            ps2.setDate(4, new java.sql.Date(d.getTime()));//csak erre a formatumra jó : 2000-01-01
             ps2.setLong(5, System.currentTimeMillis());
             ps2.executeUpdate();
             ps2.close();
@@ -56,15 +57,15 @@ public class Utility {
 
     }
 
-    public static void update(String id, String a, String b, String c, String d) {
+    public static void update(Long id, Integer a, String b, String c, java.util.Date  d) {
 
         try (Connection conn = getConnection()) {
             PreparedStatement ps2 = conn.prepareStatement("update ABC set A=?, B=?,C=?,D=? where ID=?");
-            ps2.setInt(1, Integer.parseInt(a));
+            ps2.setInt(1, a);
             ps2.setString(2, b);
             ps2.setString(3, c);
-            ps2.setDate(4, java.sql.Date.valueOf(d));//csak erre a formatumra jó : 2000-01-01
-            ps2.setLong(5, Long.parseLong(id));
+            ps2.setDate(4, new java.sql.Date(d.getTime()));//csak erre a formatumra jó : 2000-01-01
+            ps2.setLong(5, id);
             ps2.executeUpdate();
             ps2.close();
         } catch (SQLException ex) {
@@ -103,15 +104,15 @@ public class Utility {
     
     
     
-    public static List<String[]> list() {
-        List<String[]> ret = new ArrayList<>();
+    public static List<Abc> list() {
+        List<Abc> ret = new ArrayList<>();
 
         try (Connection conn = getConnection()) {
-            PreparedStatement ps2 = conn.prepareStatement("select A,B,C,D,ID from ABC");
+            PreparedStatement ps2 = conn.prepareStatement("select Id, A,B,C,D from ABC");
 
             ResultSet rs = ps2.executeQuery();
             while (rs.next()) {
-                ret.add(new String[]{rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5)});
+                ret.add(new Abc(rs.getLong(1), rs.getInt(2), rs.getString(3), rs.getString(4), rs.getDate(5)));
             }
 
             rs.close();

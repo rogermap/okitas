@@ -33,6 +33,7 @@
                     type: 'GET',
                     success: function (data) {
                         aktualisAdatok = JSON.parse(data);
+                        console.log(data);
                         aktualisAdatok.filter((e) => {
                             e[3] = e[3].substring(0, 10);
                         })

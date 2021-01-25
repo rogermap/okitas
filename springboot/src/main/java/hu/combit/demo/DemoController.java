@@ -5,19 +5,12 @@
  */
 package hu.combit.demo;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+
+import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.websocket.server.PathParam;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.Setter;
+import java.util.function.Consumer;
 import org.json.simple.JSONArray;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -26,80 +19,73 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class DemoController {
     
-    // http://localhost:8080/osszeadas/12/8 
+    @Autowired
+    AbcRepository abcRepository;
     
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    static class Osszeg {
-        private int osszeg;
-        public Osszeg( Integer a, Integer b){
-            osszeg = a+b;
-        }
-        
-    }
     
-    @GetMapping("/osszeadas/{a}/{b}")
+    @GetMapping(value = "/osszeadas/{a}/{b}", produces = "application/json")
     public ResponseEntity add(@PathVariable("a") Integer  a,@PathVariable("b")Integer b ){
         return new ResponseEntity(new Osszeg(a,b),  HttpStatus.OK);
     }
     
     @CrossOrigin(origins = "http://localhost:8080")
     @DeleteMapping("/abc/{id}")
-    protected String doDelete(@PathVariable("id") String  id) {
+    protected String doDelete(@PathVariable("id") Long  id) {
         if (id != null) {
-            Utility.delete(id);
+            abcRepository.deleteById(id);
         }
         return "OK";
     }
 
-    @PutMapping("/abc/{a}/{b}/{c}/{d}")
+    @PutMapping("/abc")
     protected String doPut(
-            @PathVariable("a") String  a,
-            @PathVariable("b") String  b,
-            @PathVariable("c") String  c,
-            @PathVariable("d") String  d) 
+            @RequestBody Abc abc) 
     {
-        if (a != null && b != null && c != null && d != null) {
-            Utility.create(a, b, c, d);
-        }
+            abcRepository.save(abc);
+        
         return "OK";
     }
 
-    @PostMapping("/abc/{a}/{b}/{c}/{d}/{id}")
+    @PostMapping("/abc")
     protected String doPost(
-            @PathVariable("a") String  a,
-            @PathVariable("b") String  b,
-            @PathVariable("c") String  c,
-            @PathVariable("d") String  d,
-            @PathVariable("id") String  id)  {
+            @RequestBody Abc abc)  {
+            abcRepository.save(abc);
         
-        if (a != null && b != null && c != null && d != null && id != null) {
-            Utility.update(id, a, b, c, d);
-        }
         return "OK";
     }
 
     @GetMapping("/abc")
-    protected String doGet() {
-        List<String[]> adatok = Utility.list();
-        JSONArray elemek = new JSONArray();
-        for (String[] adatSor : adatok) {
-            JSONArray sor = new JSONArray();
-            elemek.add(sor);
-            for (String adat : adatSor) {
-                sor.add(adat);
+    protected ResponseEntity doGet() {
+        List<Abc> adatok = new ArrayList<>();
+        Iterable<Abc> i =  abcRepository.findAll();
+        i.forEach(new Consumer<Abc>() {
+            @Override
+            public void accept(Abc t) {
+                adatok.add(t);
             }
-        }
-
-        return elemek.toJSONString();
+        });
+        return new ResponseEntity(adatok,  HttpStatus.OK);
         
     }
     
+    @GetMapping("/abc/{a}")
+    protected ResponseEntity filter(@PathVariable("a") Integer a ) {
+        List<Abc> adatok = new ArrayList<>();
+        Iterable<Abc> i =  abcRepository.findAllByA(a);
+        i.forEach(new Consumer<Abc>() {
+            @Override
+            public void accept(Abc t) {
+                adatok.add(t);
+            }
+        });
+        return new ResponseEntity(adatok,  HttpStatus.OK);
+        
+    }
 }
