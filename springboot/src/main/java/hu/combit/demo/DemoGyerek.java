@@ -5,8 +5,6 @@
  */
 package hu.combit.demo;
 
-import java.util.Date;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,22 +16,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-
-@Table(name = "abc")
-public class Abc {
+@Entity(name="DemoGyerek")
+@Table(name="DEMO_GYEREK")
+public class DemoGyerek {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "demo")
     @SequenceGenerator(name = "demo", sequenceName = "demo", allocationSize = 1)
     private Long id;
-    private Integer a;
-    private String b;
-    private String c;
-    private Date d;
-    
+    private String nev; 
+    private Long szuloId;
+    private Integer kor;
 }

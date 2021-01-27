@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Start Page</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>
+            var aktualisAdatok = null;
+            function  editRow(id) {
+                var sor = aktualisAdatok.filter((e) => e.id == id)[0];
+
+                $("#form input[name='a']").val(sor.a);
+                $("#form input[name='b']").val(sor.b);
+                $("#form input[name='c']").val(sor.c);
+                $("#form input[name='d']").val(sor.d);
+                $("#form input[name='id']").val(sor.id);
+                $("#form").show();
+            }
+            function deleteRow(id) {
+                $.ajax({
+                    url: 'abc/'+ id,
+                    type: 'DELETE',
+                    success: function (data) {
+                        console.log(data);
+                        loadData();
+                    }
+                });
+            }
+
+            function loadData() {
+                $.ajax({
+                    url: 'abc',
+                    type: 'GET',
+                    success: function (data) {
+                        aktualisAdatok = data;
+                        
+                        aktualisAdatok.filter((e) => {
+                            e.d = e.d.substring(0, 10);
+                        })
+                        $("#azonosito").html("");
+                        for (var i = 0; i < aktualisAdatok.length; i++) {
+                            var adatsor = aktualisAdatok[i];
+                            var sorStr = "<tr class='sor'><td>" + adatsor.a + "</td> <td>" + adatsor.b + "</td>" +
+                                    "<td>" + adatsor.c + "</td><td>" + adatsor.d + "</td>" +
+                                    "<td><button onclick='editRow(" + adatsor.id + ")'>Szerkesztés</button>" +
+                                    "<button onclick='deleteRow(" + adatsor.id + ")'>Törlés</button></td>" +
+                                    "</tr>";
+                            $("#azonosito").append(sorStr);
+                        }
+                    }
+                });
+            }
+
+            function create(a, b, c, d) {
+                $.ajax({
+                    url: 'abc',
+                    contentType: "application/json",
+                    data: JSON.stringify(
+                            {
+                                a: a, 
+                                b: b,
+                                c: c,
+                                d: d
+                            }
+                    ),
+                    type: 'PUT',
+                    success: function (data) {
+                        console.log(data);
+                        loadData();
+                    }
+                });
+            }
+            function update(a, b, c, d, id) {
+                $.ajax({
+                    url: 'abc',
+                    contentType: "application/json",
+                    data: JSON.stringify(
+                            {
+                                id: id,
+                                a: a, 
+                                b: b,
+                                c: c,
+                                d: d
+                            }
+                    ),
+                    type: 'POST',
+                    success: function (data) {
+                        console.log(data);
+                        loadData();
+                    }
+                });
+            }
+
+            $(document).ready(function () {
+                console.log($("#azonosito"));
+                loadData();
+                $("#form").on("submit", function (event) {
+                    event.preventDefault();
+                    const a = $("#form input[name='a']");
+                    const b = $("#form input[name='b']");
+                    const c = $("#form input[name='c']");
+                    const d = $("#form input[name='d']");
+                    const id = $("#form input[name='id']").val();
+                    if (id === "") {
+                        create(a.val(), b.val(), c.val(), d.val());
+                    } else {
+                        update(a.val(), b.val(), c.val(), d.val(), id);
+                    }
+                    $("#form").hide();
+                });
+
+                $(".letrehozas").on("click", function (event) {
+                    event.preventDefault();
+                    $("#form input").val("");
+                    $("#form input[type='submit']").val("Küldés");
+                    $("#form").show();
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <table border="1" >
+            <thead>
+                <tr>
+                    <th>A</th>
+                    <th>B</th>
+                    <th>C</th>
+                    <th>D</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="azonosito">
+            </tbody>
+            <tfoot><a class="letrehozas" href="/AdatWebKapcsolat/create.jsp">Létrehozás</a></tfoot>
+    </table>
+
+    <form id="form" style="display: none">
+        a:<input type="number" name="a">
+        <br>
+        b:<input type="string" name="b">
+        <br>
+        c:<input type="string" name="c">
+        <br>
+        d:<input type="date" name="d" >
+        <br>
+        <input type="hidden" name="id">
+        <input type="submit">
+    </form>
+
+</body>
+</html>
