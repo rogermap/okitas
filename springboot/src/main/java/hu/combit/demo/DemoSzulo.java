@@ -6,6 +6,7 @@
 package hu.combit.demo;
 
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,12 +27,12 @@ import lombok.Setter;
 @Table(name="DEMO_SZULO")
 public class DemoSzulo {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "demo")
-    @SequenceGenerator(name = "demo", sequenceName = "demo", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "demo_generator")
+    @SequenceGenerator(name = "demo_generator", sequenceName = "demo", allocationSize = 1)
     private Long id;
     private String nev;
     private String cim;
-    @OneToMany(mappedBy = "szuloId")
+    @OneToMany(mappedBy = "szuloId", cascade = {CascadeType.ALL})
     private List<DemoGyerek> gyerekek;
     
 }

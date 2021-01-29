@@ -22,47 +22,55 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class SzuloController {
-      @Autowired
+
+    @Autowired
     DemoSzuloRepository demoSzuloRepository;
-    
- 
+
+    @Autowired
+    DemoGyerekRepository demoGyerekRepository;
+
     @CrossOrigin(origins = "http://localhost:8080")
     @DeleteMapping("/szulo/{id}")
-    protected String doDelete(@PathVariable("id") Long  id) {
+    protected String doDelete(@PathVariable("id") Long id) {
         if (id != null) {
             demoSzuloRepository.deleteById(id);
         }
         return "OK";
     }
+    
+    @DeleteMapping("/gyerek/{id}")
+    protected String doGyerekDelete(@PathVariable("id") Long id) {
+        if (id != null) {
+            demoGyerekRepository.deleteById(id);
+        }
+        return "OK";
+    }
 
     @PutMapping("/szulo")
-    protected String doPut(
-            @RequestBody DemoSzulo szulo) 
-    {
-            demoSzuloRepository.save(szulo);
-        
+    protected String doPut(@RequestBody DemoSzulo szulo) {
+        demoSzuloRepository.save(szulo);
+        demoGyerekRepository.saveAll(szulo.getGyerekek());
         return "OK";
     }
 
     @PostMapping("/szulo")
-    protected String doPost(
-            @RequestBody DemoSzulo szulo)  {
-            demoSzuloRepository.save(szulo);
-        
+    protected String doPost(@RequestBody DemoSzulo szulo) {
+        demoSzuloRepository.save(szulo);
+        demoGyerekRepository.saveAll(szulo.getGyerekek());
         return "OK";
     }
 
     @GetMapping("/szulo")
     protected ResponseEntity doGet() {
         List<DemoSzulo> adatok = new ArrayList<>();
-        Iterable<DemoSzulo> i =  demoSzuloRepository.findAll();
+        Iterable<DemoSzulo> i = demoSzuloRepository.findAll();
         i.forEach(new Consumer<DemoSzulo>() {
             @Override
             public void accept(DemoSzulo t) {
                 adatok.add(t);
             }
         });
-        return new ResponseEntity(adatok,  HttpStatus.OK);
-        
+        return new ResponseEntity(adatok, HttpStatus.OK);
+
     }
 }
