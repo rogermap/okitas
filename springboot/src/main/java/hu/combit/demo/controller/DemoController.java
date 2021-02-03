@@ -3,9 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hu.combit.demo;
+package hu.combit.demo.controller;
 
 
+import hu.combit.demo.Osszeg;
+import hu.combit.demo.db.AbcRepository;
+import hu.combit.demo.model.Abc;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;

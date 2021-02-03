@@ -144,8 +144,22 @@
                         console.log(data);
                        loadData();
                         $('#gyerekModal').modal('toggle');
+                    },
+                    error: function(data) {
+                        selectedSzulo.gyerekek.pop();
+                        var errors = data.responseJSON;
+                        $("#gyerekForm input").removeClass("is-invalid");
+                        $.each(errors, function(key, message){
+                            setError("gyerekForm", key, message);
+                        });
                     }
                 });
+            }
+            
+            function setError(parent, key, message){
+                $("#"+parent+" input[name='"+key+"']").addClass("is-invalid");
+                $("#"+parent+" input[name='"+key+"']").removeClass("is-valid");
+                $("#"+parent+" #"+key+"Feedback").text(message);
             }
             function updateGyerek(nev, kor, id) {
                 var gyerek = selectedSzulo.gyerekek.filter((e) => e.id == id)[0];
@@ -182,8 +196,22 @@
                 
                 $("#gyerekForm").on("submit", function (event){
                     event.preventDefault();
+                    
+                    $("#gyerekForm input").removeClass("is-invalid");
+                    $("#gyerekForm input").addClass("is-valid");
                     const nev = $("#gyerekForm input[name='nev']");
+                    var hasError = false;
+                    if(nev.val().length < 2) {
+                        setError("gyerekForm", "nev", "Túl rövid név");
+                        hasError = true;
+                    }
                     const kor = $("#gyerekForm input[name='kor']");
+                    if(parseInt(kor.val()) < 0) {
+                        setError("gyerekForm", "kor", "Legyen nagyobb, mint 0");
+                        hasError = true;
+                    }
+                    
+                    if(hasError)return;
                     const id = $("#gyerekForm input[name='id']").val();
                     if (id === "") {
                         createGyerek(nev.val(), kor.val());
@@ -333,11 +361,13 @@
                         </div>
                         <div class="modal-body">
                             <div class="form-floating mb-3">
-                                <input type="text" name="nev" class="form-control" placeholder="Név">
+                                <input type="text" name="nev" class="form-control" placeholder="Név" required>
+                                <div id="nevFeedback" class="invalid-feedback"></div>
                                 <label for="floatingInput">Név</label>
                              </div>
                             <div class="form-floating mb-3">
-                                <input type="number" name="kor" class="form-control" placeholder="Kor">
+                                <input type="number" name="kor" class="form-control" placeholder="Kor" required>
+                                <div id="korFeedback" class="invalid-feedback"></div>
                                 <label for="floatingInput">Kor</label>
                              </div>
                             <input type="hidden" name="id">

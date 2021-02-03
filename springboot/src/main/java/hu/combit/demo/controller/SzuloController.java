@@ -3,11 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hu.combit.demo;
+package hu.combit.demo.controller;
 
+import hu.combit.demo.db.DemoGyerekRepository;
+import hu.combit.demo.db.DemoSzuloRepository;
+import hu.combit.demo.model.DemoSzulo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +41,7 @@ public class SzuloController {
         }
         return "OK";
     }
-    
+
     @DeleteMapping("/gyerek/{id}")
     protected String doGyerekDelete(@PathVariable("id") Long id) {
         if (id != null) {
@@ -47,16 +51,16 @@ public class SzuloController {
     }
 
     @PutMapping("/szulo")
-    protected String doPut(@RequestBody DemoSzulo szulo) {
+    protected String doPut(@Valid @RequestBody DemoSzulo szulo) {
         demoSzuloRepository.save(szulo);
-        demoGyerekRepository.saveAll(szulo.getGyerekek());
+     //   demoGyerekRepository.saveAll(szulo.getGyerekek());
         return "OK";
     }
 
     @PostMapping("/szulo")
-    protected String doPost(@RequestBody DemoSzulo szulo) {
+    protected String doPost(@Valid @RequestBody DemoSzulo szulo) {
         demoSzuloRepository.save(szulo);
-        demoGyerekRepository.saveAll(szulo.getGyerekek());
+      //  demoGyerekRepository.saveAll(szulo.getGyerekek());
         return "OK";
     }
 
@@ -73,4 +77,6 @@ public class SzuloController {
         return new ResponseEntity(adatok, HttpStatus.OK);
 
     }
+
+
 }

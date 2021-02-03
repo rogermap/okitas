@@ -5,6 +5,7 @@
  */
 package hu.combit.demo;
 
+import hu.combit.demo.model.Abc;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;

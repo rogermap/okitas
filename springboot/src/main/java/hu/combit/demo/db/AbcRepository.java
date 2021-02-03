@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hu.combit.demo;
+package hu.combit.demo.db;
 
+import hu.combit.demo.model.Abc;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
