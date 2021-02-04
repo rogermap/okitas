@@ -161,6 +161,7 @@
                 $("#"+parent+" input[name='"+key+"']").removeClass("is-valid");
                 $("#"+parent+" #"+key+"Feedback").text(message);
             }
+            
             function updateGyerek(nev, kor, id) {
                 var gyerek = selectedSzulo.gyerekek.filter((e) => e.id == id)[0];
                 gyerek.nev = nev;
